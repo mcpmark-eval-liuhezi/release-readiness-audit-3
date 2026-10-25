@@ -1,0 +1,23 @@
+name: Release Readiness Audit
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Write audit evidence file
+        run: |
+          echo "Release readiness audit evidence" > audit-evidence.txt
+          echo "Generated at (UTC): $(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> audit-evidence.txt
+          echo "Repository: ${GITHUB_REPOSITORY}" >> audit-evidence.txt
+          echo "Workflow run: ${GITHUB_RUN_ID}" >> audit-evidence.txt
+          echo "Ref: ${GITHUB_REF}" >> audit-evidence.txt
+          cat audit-evidence.txt
+      - name: Upload audit evidence artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-evidence
+          path: audit-evidence.txt
